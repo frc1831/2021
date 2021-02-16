@@ -12,6 +12,7 @@
 
 #include <frc/commands/Scheduler.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/WPILib.h>
 #include <cameraserver/CameraServer.h>
 #include <frc/DriverStation.h>
 
@@ -43,7 +44,8 @@ Robot::Robot() {
 		frc::DriverStation::ReportError(err_string.c_str());
 	}
 
-	
+//	frc::MecanumDrive* m_robotDrive; // {_FrntLeft, _RearLeft, _FrntRite,_RearRite};
+   	
 
 	turnController = new frc::PIDController(kP, kI, kD, kF, ahrs, this);
 	turnController->SetInputRange(-180.0f,  180.0f);
@@ -61,6 +63,17 @@ void Robot::RobotInit() {
 
 	frc::CameraServer::GetInstance()->StartAutomaticCapture();
 
+_FrntLeft->ConfigFactoryDefault();
+_FrntRite->ConfigFactoryDefault();
+_RearLeft->ConfigFactoryDefault();
+_RearRite->ConfigFactoryDefault();
+
+
+
+
+
+//m_robotDrive = new frc::MecanumDrive(_FrntLeft, _RearLeft, _FrntRite,_RearRite);
+
 
 //    _FrntRiteSpark.SetInverted(false);
 //	  _RearRiteSpark.SetInverted(false);
@@ -70,8 +83,8 @@ void Robot::RobotInit() {
 
  	
 
-    m_robotDrive.SetExpiration(0.1);
-   	m_robotDrive.SetSafetyEnabled(false);
+    //m_robotDrive.SetExpiration(0.1);
+   //	m_robotDrive.SetSafetyEnabled(false);
 
 
 	rotateToAngleRate = 0.00f;
@@ -183,8 +196,10 @@ void Robot::TeleopPeriodic() {
 	std::string gameData;
 	std::string colorDisplayText;
 
-   	m_robotDrive.SetSafetyEnabled(false);
-	_FrntRiteEncoder.SetPosition(0);
+   	m_robotDrive->SetSafetyEnabled(false);
+
+	// ORIGINAL ENCODER
+	//_FrntRiteEncoder.SetPosition(0);
 
   	while (IsOperatorControl() && IsEnabled()) {
 
@@ -205,14 +220,14 @@ void Robot::TeleopPeriodic() {
      	* 
      	* GetPosition() returns the position of the encoder in units of revolutions
      	*/
-      	frc::SmartDashboard::PutNumber("Encoder Position", _FrntRiteEncoder.GetPosition());
+      //	frc::SmartDashboard::PutNumber("Encoder Position", _FrntRiteEncoder.GetPosition());
 		/**
 		 * Encoder velocity is read from a CANEncoder object by calling the
 		 * GetVelocity() method.
 		 * 
 		 * GetVelocity() returns the velocity of the encoder in units of RPM
 		 */
-		frc::SmartDashboard::PutNumber("Encoder Velocity", _FrntRiteEncoder.GetVelocity());
+		//frc::SmartDashboard::PutNumber("Encoder Velocity", _FrntRiteEncoder.GetVelocity());
       
 
 		if (precisionDrive == true){
@@ -223,7 +238,7 @@ void Robot::TeleopPeriodic() {
 			driveY = driveY/3;
 			rotate = rotate/3;
 
-			m_robotDrive.DriveCartesian(driveX, driveY, rotate ,0);
+			m_robotDrive->DriveCartesian(driveX, driveY, rotate ,0);
 		}
 		else {
 			// Forward and Backward			
@@ -295,7 +310,7 @@ void Robot::TeleopPeriodic() {
 		        currentRotationRate = rotate;
 		    }
 		    
-			m_robotDrive.DriveCartesian(driveX, driveY, currentRotationRate ,ahrs->GetAngle());
+			m_robotDrive->DriveCartesian(driveX, driveY, currentRotationRate ,ahrs->GetAngle());
 		} else {
 	        gyroValue = ahrs->GetAngle();
 	        if (!fieldDrive) gyroValue = 0;
@@ -304,7 +319,7 @@ void Robot::TeleopPeriodic() {
 			frc::SmartDashboard::PutNumber("Y Value",driveY);
 			frc::SmartDashboard::PutNumber("Z Value",rotate);
 			frc::SmartDashboard::PutNumber("Gyro",gyroValue);
-	        m_robotDrive.DriveCartesian(driveX, driveY, rotate ,gyroValue);
+	        m_robotDrive->DriveCartesian(driveX, driveY, rotate ,gyroValue);
 		}
 		// *********************  END DRIVE CONTROLS ***********************
 
@@ -436,7 +451,7 @@ void Robot::TeleopPeriodic() {
 
   }  // while
 
-  m_robotDrive.SetSafetyEnabled(true);
+  m_robotDrive->SetSafetyEnabled(true);
 
 }
 

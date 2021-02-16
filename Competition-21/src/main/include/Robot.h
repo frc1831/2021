@@ -12,7 +12,7 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
-#include <frc/drive/MecanumDrive.h>
+#include <frc/Drive/MecanumDrive.h>
 #include <frc/Joystick.h>
 #include <frc/PIDController.h>
 #include <frc/DigitalInput.h>
@@ -23,10 +23,15 @@
 
 // *******CAN IDs
 // Mecanum SPARK Max
-const static int FrntLeftSpark = 5;
-const static int FrntRiteSpark = 6;
-const static int RearLeftSpark = 7;
-const static int RearRiteSpark = 8;
+//const static int FrntLeftSpark = 5;
+//const static int FrntRiteSpark = 6;
+//const static int RearLeftSpark = 7;
+//const static int RearRiteSpark = 8;
+const static int FRONT_LEFT = 5;
+const static int FRONT_RIGHT = 6;
+const static int REAR_LEFT = 7;
+const static int REAR_RIGHT = 8;
+
 const static int ShooterSpark = 9;
 
 // Talon CAN ID'S
@@ -121,13 +126,20 @@ class Robot : public frc::TimedRobot, public frc::PIDOutput {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
+WPI_TalonFX* _FrntLeft = new WPI_TalonFX(FRONT_LEFT);
+WPI_TalonFX* _FrntRite = new WPI_TalonFX(FRONT_RIGHT);
+WPI_TalonFX* _RearLeft = new WPI_TalonFX(REAR_LEFT);
+WPI_TalonFX* _RearRite = new WPI_TalonFX(REAR_RIGHT);
 
-  rev::CANSparkMax _FrntLeftSpark {FrntLeftSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-  rev::CANSparkMax _FrntRiteSpark {FrntRiteSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-  rev::CANSparkMax _RearLeftSpark {RearLeftSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-  rev::CANSparkMax _RearRiteSpark {RearRiteSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
 
-  rev::CANEncoder _FrntRiteEncoder = rev::CANEncoder(_FrntRiteSpark, rev::CANEncoder::EncoderType::kHallSensor);
+
+//  rev::CANSparkMax _FrntLeftSpark {FrntLeftSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+//  rev::CANSparkMax _FrntRiteSpark {FrntRiteSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+//  rev::CANSparkMax _RearLeftSpark {RearLeftSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+//  rev::CANSparkMax _RearRiteSpark {RearRiteSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+
+// NOTE: Not sure why the one below was used.
+//  rev::CANEncoder _FrntRiteEncoder = rev::CANEncoder(_FrntRiteSpark, rev::CANEncoder::EncoderType::kHallSensor);
 
   rev::CANSparkMax _ShooterSpark {ShooterSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANEncoder  _ShooterEncoder = _ShooterSpark.GetEncoder();
@@ -149,14 +161,21 @@ class Robot : public frc::TimedRobot, public frc::PIDOutput {
  * Because of this, we only need to pass the lead motors to m_robotDrive. Whatever commands are 
  * sent to them will automatically be copied by the follower motors
  */
-  frc::MecanumDrive m_robotDrive{_FrntLeftSpark, _RearLeftSpark, _FrntRiteSpark,_RearRiteSpark};  
+ 
+//frc::MecanumDrive *m_robotDrive{*_FrntLeft, *_RearLeft, _FrntRite, _RearRite};  
+frc::MecanumDrive *m_robotDrive = new frc::MecanumDrive(*_FrntLeft, *_RearLeft, *_FrntRite, *_RearRite);
+
+
 
   /**
  * In order to read encoder values an encoder object is created using the 
  * GetEncoder() method from an existing CANSparkMax object
  */
- 	rev::CANEncoder _FrntLeftEnc = _FrntLeftSpark.GetEncoder();
-	rev::CANEncoder _FrntRiteEnc = _FrntRiteSpark.GetEncoder();
+rev::CANEncoder* _FrntLeftEnc;
+rev::CANEncoder* _FrntRiteEnc;
+
+// 	rev::CANEncoder _FrntLeftEnc = _FrntLeftSpark.GetEncoder();
+//	rev::CANEncoder _FrntRiteEnc = _FrntRiteSpark.GetEncoder();
 
   // Control
   frc::Joystick m_stick0{kJoystickChannel0};
