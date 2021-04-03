@@ -71,9 +71,17 @@ double RomiGyro::GetAngleZ() {
 }
 
 void RomiGyro::Reset() {
+
   if (m_simAngleX) {
     m_angleXOffset = m_simAngleX.Get();
     m_angleYOffset = m_simAngleY.Get();
     m_angleZOffset = m_simAngleZ.Get();
   }
 }
+
+void RomiGyro::Zero() {
+  m_simAngleZ.Set(0.0);
+//  m_simAngleX.Set(0.0);
+//  m_simAngleY.Set(0.0);
+}
+

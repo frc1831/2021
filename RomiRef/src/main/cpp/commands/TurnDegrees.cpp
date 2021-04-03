@@ -10,6 +10,7 @@
 void TurnDegrees::Initialize() {
   // Set motors to stop, read encoder values for starting point
   m_drive->ArcadeDrive(0, 0);
+  m_drive->ResetGyro();
   m_drive->ResetEncoders();
 }
 
@@ -19,6 +20,8 @@ void TurnDegrees::Execute() {
 
 void TurnDegrees::End(bool interrupted) {
   m_drive->ArcadeDrive(0, 0);
+  m_drive->ResetGyro();
+  m_drive->ResetEncoders();
 }
 
 bool TurnDegrees::IsFinished() {

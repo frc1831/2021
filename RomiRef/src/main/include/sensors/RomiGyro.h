@@ -45,6 +45,8 @@ class RomiGyro {
    */
   void Reset();
 
+  void Zero();
+
  private:
   hal::SimDevice m_simDevice;
   hal::SimDouble m_simRateX;
