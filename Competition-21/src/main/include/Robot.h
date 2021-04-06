@@ -32,15 +32,11 @@ const static int FRONT_RIGHT = 6;
 const static int REAR_LEFT = 7;
 const static int REAR_RIGHT = 8;
 
-const static int ShooterSpark = 9;
-
-// Talon CAN ID'S
-const static int SpareTalon1 = 10;
-const static int SpareTalon2 = 11;
-const static int FeederTalon = 12;
-const static int SpinnerTalon = 13;
-const static int CollectorTalon = 14;
-const static int SpareSPXTalon = 15;
+// Non Driving CAN ID'S
+const static int COLLECTOR = 15;
+const static int ShooterSpark1 = 16;
+const static int FEEDER = 17;
+const static int SHOOTERTOP = 18;
 
 // Other CAN devices
 const static int PDP = 32;
@@ -64,12 +60,13 @@ const static int ShootStopFeeder = 10;
 const static int ShootStopAll = 11;
 
 // Shooter Values
-const static float ShooterPower = .65;
-const static float FeederPower = .80;
-const static float CollectorPower = .99;
+const static float ShooterPower1 = .20;
+const static float SHOOTERTOPPOWER = -.25;
+const static float FEEDERPOWER = .55;
+const static float COLLECTORPOWER = -.45;
 
 // Joystick Deadzone
-const static float DeadZone = .30;
+const static float DeadZone = .20;
 
 
 // *********Control
@@ -141,11 +138,16 @@ WPI_TalonFX* _RearRite = new WPI_TalonFX(REAR_RIGHT);
 // NOTE: Not sure why the one below was used.
 //  rev::CANEncoder _FrntRiteEncoder = rev::CANEncoder(_FrntRiteSpark, rev::CANEncoder::EncoderType::kHallSensor);
 
-  rev::CANSparkMax _ShooterSpark {ShooterSpark, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+  rev::CANSparkMax _Collector {COLLECTOR, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+  rev::CANSparkMax _Feeder {FEEDER, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+
+  rev::CANSparkMax _ShooterSpark {ShooterSpark1, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANEncoder  _ShooterEncoder = _ShooterSpark.GetEncoder();
 
-	WPI_VictorSPX *_CollectorTalon;
-  WPI_VictorSPX *_FeederTalon;
+  rev::CANSparkMax _ShooterTop {SHOOTERTOP, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+
+	// WPI_VictorSPX *_CollectorTalon;
+  // WPI_VictorSPX *_FeederTalon;
 
   
 

@@ -20,8 +20,8 @@ double angle = 0;
 
 Robot::Robot() {
 
-	_CollectorTalon = new WPI_VictorSPX(SpinnerTalon);
-	_FeederTalon = new WPI_VictorSPX(FeederTalon);
+	//_CollectorTalon = new WPI_VictorSPX(SpinnerTalon);
+	//_FeederTalon = new WPI_VictorSPX(FeederTalon);
 
   	rotateToAngleRate = 0.00f;
 	try {
@@ -213,6 +213,10 @@ void Robot::TeleopPeriodic() {
 		if (m_stick0.GetRawButton(SlowDriveON)) precisionDrive = true;
 		if (m_stick0.GetRawButton(SlowDriveOFF)) precisionDrive = false;
 
+		if (m_stick0.GetRawButton(FieldModeON)) fieldDrive = true;
+		if (m_stick0.GetRawButton(FieldModeOFF)) fieldDrive = false;
+
+      	if( m_stick0.GetRawButton(ZeroYaw)) ahrs->ZeroYaw();
 		
 		
 		/* Encoder position is read from a CANEncoder object by calling the
@@ -233,12 +237,15 @@ void Robot::TeleopPeriodic() {
 		if (precisionDrive == true){
 			if (fabs(driveX) < DeadZone) driveX = 0.0;
 			if (fabs(driveY) < DeadZone) driveY = 0.0;
-			if (fabs(rotate) < DeadZone) rotate = 0.0;
-			driveX = -(driveX/3);
-			driveY = driveY/3;
+			if (fabs(rotate) < DeadZone ) rotate = 0.0;
+			driveX = -(driveX/2);
+			driveY = driveY/2;
 			rotate = rotate/3;
 
-			m_robotDrive->DriveCartesian(driveX, driveY, rotate ,0);
+//			driveX = -driveX;
+			rotate = -rotate;
+
+//			m_robotDrive->DriveCartesian(driveX, driveY, rotate ,0);
 		}
 		else {
 			// Forward and Backward			
@@ -278,10 +285,6 @@ void Robot::TeleopPeriodic() {
 			rotate = -rotate;
 		}
 
-		if (m_stick0.GetRawButton(FieldModeON)) fieldDrive = true;
-		if (m_stick0.GetRawButton(FieldModeOFF)) fieldDrive = false;
-
-      	if( m_stick0.GetRawButton(ZeroYaw)) ahrs->ZeroYaw();
 
         bool rotateToAngle = false;
 		double currentRotationRate = 0;
@@ -355,35 +358,41 @@ void Robot::TeleopPeriodic() {
 		// Operate Collector
 		if (m_stick0.GetTrigger()) 
 		{
-			_CollectorTalon->Set(ControlMode::PercentOutput, CollectorPower);
-			_FeederTalon->Set(ControlMode::PercentOutput, FeederPower);
+			_Collector.Set(COLLECTORPOWER);
+			//_CollectorTalon->Set(ControlMode::PercentOutput, CollectorPower);
+			_Feeder.Set(FEEDERPOWER);
 		}	
 		else
 		{
-			_CollectorTalon->Set(ControlMode::PercentOutput, 0);
+			//_CollectorTalon->Set(ControlMode::PercentOutput, 0);
+				_Collector.Set(0);
 			if(!bShootStartedFeeder)
-				_FeederTalon->Set(ControlMode::PercentOutput, 0);
+				_Feeder.Set(0);
 		}
 
 		// Reverse Collector
-/*		if (m_stick0.GetRawButton(ReverseCollector))
+		if (m_stick0.GetRawButton(ReverseCollector))
 		{
-			_CollectorTalon->Set(ControlMode::PercentOutput, -CollectorPower);
-			_FeederTalon->Set(ControlMode::PercentOutput, -FeederPower);
+			_Collector.Set(-COLLECTORPOWER);
+			_Feeder.Set(-FEEDERPOWER);
+
+			//_CollectorTalon->Set(ControlMode::PercentOutput, -CollectorPower);
+			//_FeederTalon->Set(ControlMode::PercentOutput, -FeederPower);
 		}	
 		else
 		{
-			_CollectorTalon->Set(ControlMode::PercentOutput, 0);
-			if(!bShootStartedFeeder)
-				_FeederTalon->Set(ControlMode::PercentOutput, 0);
+			_Collector.Set(0);
+			_Feeder.Set(0);
+//			if(!bShootStartedFeeder)
+//				_FeederTalon->Set(ControlMode::PercentOutput, 0);
 		}
-*/
+// */
 		
 		if (bShootStartedShooter)
 		{
 			if (m_stick1.GetRawButton(ShootStartFeeder)) 
 			{
-				_FeederTalon->Set(ControlMode::PercentOutput, FeederPower);
+				_Feeder.Set(FEEDERPOWER);
 				bShootStartedFeeder = true;
 			}
 		}
@@ -392,7 +401,8 @@ void Robot::TeleopPeriodic() {
 		if (m_stick1.GetRawButton(ShootStartShooter))
 		{
 			bShootStartedShooter = true;
-			_ShooterSpark.Set(ShooterPower);
+			_ShooterSpark.Set(ShooterPower1);
+			_ShooterTop.Set(SHOOTERTOPPOWER);
 		} 
 
 		frc::SmartDashboard::PutNumber("Encoder Position", _ShooterEncoder.GetPosition());
@@ -401,7 +411,7 @@ void Robot::TeleopPeriodic() {
 		if(m_stick1.GetRawButton(ShootStopFeeder))
 		{
 			bShootStartedFeeder = false;
-			_FeederTalon->Set(ControlMode::PercentOutput, 0);
+			_Feeder.Set(0);
 		}
 
 		if (m_stick1.GetRawButton(ShootStopAll))
@@ -409,7 +419,8 @@ void Robot::TeleopPeriodic() {
 			bShootStartedShooter = false;
 			bShootStartedFeeder = false;
 			_ShooterSpark.Set(0);
-			_FeederTalon->Set(ControlMode::PercentOutput, 0);
+			_ShooterTop.Set(0);
+			_Feeder.Set(0);
 		}
 
 		// ***************  END COLLECTOR/SHOOTER CONTROLS *****************
