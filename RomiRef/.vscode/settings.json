@@ -16,5 +16,9 @@
   },
   "C_Cpp.default.configurationProvider": "vscode-wpilib",
   "wpilib.skipSelectSimulateExtension": true,
-  "C_Cpp.errorSquiggles": "Disabled"
+  "C_Cpp.errorSquiggles": "Disabled",
+  "files.associations": {
+    "fstream": "cpp",
+    "xlocmes": "cpp"
+  }
 }

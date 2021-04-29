@@ -12,6 +12,10 @@
 #include "Constants.h"
 #include "commands/AutonomousDistance.h"
 #include "commands/AutonomousTime.h"
+#include "commands/CloseClawCommand.h"
+#include "commands/OpenClawCommand.h"
+#include "commands/StopClawCommand.h"
+#include "subsystems/ClawMechanism.h"
 #include "subsystems/Drivetrain.h"
 #include "subsystems/OnBoardIO.h"
 
@@ -38,21 +42,25 @@ class RobotContainer {
  public:
   RobotContainer();
   frc2::Command* GetAutonomousCommand();
+  
 
  private:
   // Assumes a gamepad plugged into channnel 0
-  frc::Joystick m_controller{0};
+  frc::Joystick m_joy01{RobotControls::JOYSTICK01};
   frc::SendableChooser<frc2::Command*> m_chooser;
 
   // The robot's subsystems
   Drivetrain m_drive;
+  ClawSubsystem m_claw;
+  
   OnBoardIO m_onboardIO{OnBoardIO::ChannelMode::INPUT,
                         OnBoardIO::ChannelMode::INPUT};
+
 
   // Example button
   frc2::Button m_onboardButtonA{
       [this] { return m_onboardIO.GetButtonAPressed(); }};
-
+ 
   // Autonomous commands.
   AutonomousDistance m_autoDistance{&m_drive};
   AutonomousTime m_autoTime{&m_drive};

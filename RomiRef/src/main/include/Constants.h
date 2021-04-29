@@ -13,7 +13,20 @@
  * they are needed.
  */
 
+namespace ClawConstants {
+        constexpr int DIO_PORT = 8;
+        constexpr int SERVO_PORT = 8;
+        constexpr int SERVO_CLOSE = -1;
+        constexpr int SERVO_STOP= 0;
+        constexpr int SERVO_OPEN = 1;
+        constexpr double SERVO_ACTION_TIME = 10.0;
+    }
+
 namespace DriveConstants {
 constexpr double kCountsPerRevolution = 1440.0;
 constexpr double kWheelDiameterInch = 2.75;
 }  // namespace DriveConstants
+
+namespace RobotControls {
+    constexpr int JOYSTICK01 = 0;
+}
