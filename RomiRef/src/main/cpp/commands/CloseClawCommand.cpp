@@ -13,8 +13,28 @@ void CloseClawCommand::Initialize() {
 void CloseClawCommand::End(bool interrupted) {
   m_claw->Stop();
 }
-/*
-bool CloseClawCommand::IsFinished() {
-    return m_claw->IsGripping();
+
+CloseLeftClawCommand::CloseLeftClawCommand(ClawSubsystem* claw) : m_claw(claw) {
+  SetName("Close Left Claw");
+  AddRequirements({m_claw});
 }
-*/
+void CloseLeftClawCommand::Initialize() {
+        m_claw->CloseLeft(); 
+}
+
+void CloseLeftClawCommand::End(bool interrupted) {
+  m_claw->Stop();
+}
+
+
+CloseRightClawCommand::CloseRightClawCommand(ClawSubsystem* claw) : m_claw(claw) {
+  SetName("Close Right Claw");
+  AddRequirements({m_claw});
+}
+void CloseRightClawCommand::Initialize() {
+        m_claw->CloseRight(); 
+}
+
+void CloseRightClawCommand::End(bool interrupted) {
+  m_claw->Stop();
+}

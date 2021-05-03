@@ -14,14 +14,21 @@ public:
     ClawSubsystem();
 
     void Open();
+    void OpenLeft();
+    void OpenRight();
+
 
     void Close();
+    void CloseLeft();
+    void CloseRight();
+    
 
     void Stop();
 
  //   bool IsGripping();
 
 private:
-     frc::Spark m_servo{2};  // PWM number of EXT 3 
+     frc::Spark m_servo{2};     // PWM number of EXT 3 
+     frc::Spark m_servo2{3};     // PWM number of EXT 3 
  //    frc::DigitalInput m_contact{3};  // EXT number
 };

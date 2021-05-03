@@ -25,6 +25,11 @@ void RobotContainer::ConfigureButtonBindings() {
 
 frc2::JoystickButton m_b3{&m_joy01, 3};
 frc2::JoystickButton m_b4{&m_joy01, 4};
+frc2::JoystickButton m_b7{&m_joy01, 7}; // Open Left
+frc2::JoystickButton m_b8{&m_joy01, 8}; // Open Right
+frc2::JoystickButton m_b9{&m_joy01, 9}; // Close Left
+frc2::JoystickButton m_b10{&m_joy01, 10}; // Close Right
+
 
  frc2::JoystickButton m_test{&m_joy01, 11};
 
@@ -32,6 +37,17 @@ m_b3.WhenPressed(OpenClawCommand(&m_claw))
     .WhenReleased(StopClawCommand(&m_claw));
 m_b4.WhenPressed(CloseClawCommand(&m_claw))
     .WhenReleased(StopClawCommand(&m_claw));
+
+m_b7.WhenPressed(OpenLeftClawCommand(&m_claw));
+   // .WhenReleased(StopClawCommand(&m_claw));
+m_b8.WhenPressed(OpenRightClawCommand(&m_claw));
+    //.WhenReleased(StopClawCommand(&m_claw));
+m_b9.WhenPressed(CloseLeftClawCommand(&m_claw));
+   // .WhenReleased(StopClawCommand(&m_claw));
+m_b10.WhenPressed(CloseRightClawCommand(&m_claw));
+    //.WhenReleased(StopClawCommand(&m_claw));
+
+
 
 m_test.WhenPressed(frc2::PrintCommand("Button A Pressed"))
       .WhenReleased(frc2::PrintCommand("Button A Released"));

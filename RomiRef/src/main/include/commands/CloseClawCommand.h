@@ -19,3 +19,30 @@ class CloseClawCommand
     private:
     ClawSubsystem* m_claw;
 };
+
+class CloseLeftClawCommand
+    : public frc2::CommandHelper<frc2::CommandBase, CloseLeftClawCommand> {
+     public:
+      explicit CloseLeftClawCommand(ClawSubsystem* claw);
+      void Initialize() override;
+    
+     void End(bool interrupted) override;
+    // bool IsFinished() override;
+
+    private:
+    ClawSubsystem* m_claw;
+};
+
+
+class CloseRightClawCommand
+    : public frc2::CommandHelper<frc2::CommandBase, CloseRightClawCommand> {
+     public:
+      explicit CloseRightClawCommand(ClawSubsystem* claw);
+      void Initialize() override;
+    
+     void End(bool interrupted) override;
+    // bool IsFinished() override;
+
+    private:
+    ClawSubsystem* m_claw;
+};

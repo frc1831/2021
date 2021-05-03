@@ -16,8 +16,30 @@ void OpenClawCommand::End(bool interrupted) {
     m_claw->Stop();
 }
 
-/*
-bool OpenClawCommand::IsFinished() {
-      return m_claw->IsGripping();
+OpenLeftClawCommand::OpenLeftClawCommand(ClawSubsystem* claw) : m_claw(claw) {
+//:  frc2::CommandHelper<frc2::WaitCommand, OpenClawCommand>{(units::time::second_t) ClawConstants::SERVO_ACTION_TIME}, m_claw(claw) 
+   SetName("OpenLeftClaw");
+   AddRequirements({m_claw});
 }
-*/
+void OpenLeftClawCommand::Initialize() {
+        m_claw->OpenLeft(); 
+//        frc2::WaitCommand::Initialize();
+}
+
+void OpenLeftClawCommand::End(bool interrupted) {
+    m_claw->Stop();
+}
+
+OpenRightClawCommand::OpenRightClawCommand(ClawSubsystem* claw) : m_claw(claw) {
+//:  frc2::CommandHelper<frc2::WaitCommand, OpenClawCommand>{(units::time::second_t) ClawConstants::SERVO_ACTION_TIME}, m_claw(claw) 
+   SetName("OpenRightClaw");
+   AddRequirements({m_claw});
+}
+void OpenRightClawCommand::Initialize() {
+        m_claw->OpenRight(); 
+//        frc2::WaitCommand::Initialize();
+}
+
+void OpenRightClawCommand::End(bool interrupted) {
+    m_claw->Stop();
+}
