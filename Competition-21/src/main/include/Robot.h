@@ -19,8 +19,10 @@
 #include <ctre/Phoenix.h>
 #include <rev/CANSparkMax.h>
 #include <frc/PWMVictorSPX.h>
+#include <rev/Rev2mDistanceSensor.h>
 #include <AHRS.h>
 
+  
 // *******CAN IDs
 // Mecanum SPARK Max
 //const static int FrntLeftSpark = 5;
@@ -34,7 +36,7 @@ const static int REAR_RIGHT = 8;
 
 // Non Driving CAN ID'S
 const static int COLLECTOR = 15;
-const static int ShooterSpark1 = 16;
+const static int SHOOTERBOTTOM = 16;
 const static int FEEDER = 17;
 const static int SHOOTERTOP = 18;
 
@@ -66,12 +68,12 @@ const static float FEEDERPOWER = .55;
 const static float COLLECTORPOWER = -.45;
 
 // Joystick Deadzone
-const static float DeadZone = .20;
+const static float DeadZone = .00;
 
 
 // *********Control
-const static int kJoystickChannel0 = 0;
-const static int kJoystickChannel1 = 1;
+const static int kJoystickChannel0 = 0;  // Left Joystick
+const static int kJoystickChannel1 = 1;  // Right Joystick
 
 // *********PID stuff
 /* The following PID Controller coefficients will need to be tuned */
@@ -95,7 +97,6 @@ const static double kDistancePerPulse = 0.19633;   //kDistancePerRevolution / kP
 /* This tuning parameter indicates how close to "on target" the    */
 /* PID Controller will attempt to get.                             */
 const static double kToleranceDegrees = 2.00f;
-
 
 
 class Robot : public frc::TimedRobot, public frc::PIDOutput {
@@ -141,11 +142,14 @@ WPI_TalonFX* _RearRite = new WPI_TalonFX(REAR_RIGHT);
   rev::CANSparkMax _Collector {COLLECTOR, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANSparkMax _Feeder {FEEDER, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
 
-  rev::CANSparkMax _ShooterSpark {ShooterSpark1, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-  rev::CANEncoder  _ShooterEncoder = _ShooterSpark.GetEncoder();
+  rev::CANSparkMax _ShooterBottom {SHOOTERBOTTOM, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
 
   rev::CANSparkMax _ShooterTop {SHOOTERTOP, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+  rev::CANEncoder    _ShooterTopEncoder = _ShooterTop.GetEncoder();
 
+  rev::Rev2mDistanceSensor _DistanceSensor {rev::Rev2mDistanceSensor::Port::kOnboard, rev::Rev2mDistanceSensor::DistanceUnit::kInches, rev::Rev2mDistanceSensor::RangeProfile::kLongRange};
+
+  //  rev::Rev2mDistanceSensor *distSensor;
 	// WPI_VictorSPX *_CollectorTalon;
   // WPI_VictorSPX *_FeederTalon;
 
@@ -180,8 +184,8 @@ rev::CANEncoder* _FrntRiteEnc;
 //	rev::CANEncoder _FrntRiteEnc = _FrntRiteSpark.GetEncoder();
 
   // Control
-  frc::Joystick m_stick0{kJoystickChannel0};
-  frc::Joystick m_stick1{kJoystickChannel1};
+  frc::Joystick m_stickLeft{kJoystickChannel0};
+  frc::Joystick m_stickRight{kJoystickChannel1};
   
 
 	// Navx

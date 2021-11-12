@@ -19,8 +19,7 @@ void DriveDistance::Execute() {
 
 void DriveDistance::End(bool interrupted) {
   m_drive->ArcadeDrive(0, 0);
- 
- 
+  m_drive->ResetEncoders();
 }
 
 bool DriveDistance::IsFinished() {

@@ -5,7 +5,8 @@
 #include "subsystems/Drivetrain.h"
 
 #include <wpi/math>
-
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/PrintCommand.h>
 #include "Constants.h"
 
 using namespace DriveConstants;
@@ -27,6 +28,7 @@ void Drivetrain::Periodic() {
 }
 
 void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate) {
+  
   m_drive.ArcadeDrive(xaxisSpeed, zaxisRotate);
 }
 
@@ -36,10 +38,12 @@ void Drivetrain::ResetEncoders() {
 }
 
 int Drivetrain::GetLeftEncoderCount() {
+  
   return m_leftEncoder.Get();
 }
 
 int Drivetrain::GetRightEncoderCount() {
+
   return m_rightEncoder.Get();
 }
 

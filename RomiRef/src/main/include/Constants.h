@@ -13,8 +13,21 @@
  * they are needed.
  */
 
-namespace ClawConstants {
-        constexpr int DIO_PORT = 8;
+// inchPerDegree = (5.551_in * wpi::math::pi) / 360_deg;
+
+// meterPerDegree = .140 * PI / 360 degree
+
+namespace DriveTrainConstants {
+    constexpr double METERPERDEGREE = 0.0012; // meters per degree
+}
+
+namespace ExternalConstants {
+        constexpr int EXT_0_DIO = 8;
+        constexpr int EXT_1_ANL_IN = 0;
+        constexpr int EXT_2_ANL_IN = 1;
+        constexpr int EXT_3_PWM = 2;
+        constexpr int EXT_4_PWM = 3;
+        
         constexpr int SERVO_PORT = 8;
         constexpr int SERVO_CLOSE = -1;
         constexpr int SERVO_STOP= 0;

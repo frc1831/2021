@@ -22,11 +22,14 @@ class TurnDegrees : public frc2::CommandHelper<frc2::CommandBase, TurnDegrees> {
   void Execute() override;
   void End(bool interrupted) override;
   bool IsFinished() override;
+  
 
  private:
   double m_speed;
   units::degree_t m_angle;
   Drivetrain* m_drive;
 
-  units::meter_t GetAverageTurningDistance();
+  double GetAverageTurningDistance();
+  units::meter_t GetLeftEncTurningDistance();
+  units::meter_t GetRightEncTurningDistance();
 };

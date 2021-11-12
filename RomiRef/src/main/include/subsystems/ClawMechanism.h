@@ -8,6 +8,8 @@
 //#include <frc/Servo.h>
 #include "Constants.h"
 
+using namespace ExternalConstants;
+
 class ClawSubsystem :public  frc2::SubsystemBase {
     
 public: 
@@ -28,7 +30,7 @@ public:
  //   bool IsGripping();
 
 private:
-     frc::Spark m_servo{2};     // PWM number of EXT 3 
-     frc::Spark m_servo2{3};     // PWM number of EXT 3 
- //    frc::DigitalInput m_contact{3};  // EXT number
+     frc::Spark m_servo{EXT_3_PWM};     // PWM number of EXT 3 
+     frc::Spark m_servo2{EXT_4_PWM};     // PWM number of EXT 3 
+  //   frc::DigitalOutput m_contact{ DIO_PORT};  // EXT number
 };

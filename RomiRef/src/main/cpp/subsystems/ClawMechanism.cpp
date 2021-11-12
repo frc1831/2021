@@ -3,7 +3,7 @@
 
 #include "Constants.h"
 
-using namespace ClawConstants;
+using namespace ExternalConstants;
 
    ClawSubsystem::ClawSubsystem() {
        SetName("Claw");
@@ -13,6 +13,7 @@ using namespace ClawConstants;
     void ClawSubsystem::Open() {
         m_servo.Set(1.0);
         m_servo2.Set(-1.0);
+        
     }
 
      void ClawSubsystem::OpenLeft() {

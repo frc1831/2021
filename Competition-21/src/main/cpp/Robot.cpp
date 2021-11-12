@@ -15,6 +15,7 @@
 #include <frc/WPILib.h>
 #include <cameraserver/CameraServer.h>
 #include <frc/DriverStation.h>
+#include <rev/Rev2mDistanceSensor.h>
 
 double angle = 0;
 
@@ -59,6 +60,10 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+
+  // initialize distance sensor on OnBoard port, set units to inches
+  // distSensor = new rev::Rev2mDistanceSensor{rev::Rev2mDistanceSensor::Port::kOnboard, rev::Rev2mDistanceSensor::DistanceUnit::kInches};
 
 
 	frc::CameraServer::GetInstance()->StartAutomaticCapture();
@@ -198,25 +203,29 @@ void Robot::TeleopPeriodic() {
 
    	m_robotDrive->SetSafetyEnabled(false);
 
+   //  distSensor->SetEnabled(true);
 	// ORIGINAL ENCODER
 	//_FrntRiteEncoder.SetPosition(0);
+
+	_DistanceSensor.SetEnabled(true);
+	_DistanceSensor.SetAutomaticMode(true);
 
   	while (IsOperatorControl() && IsEnabled()) {
 
 		frc::SmartDashboard::PutNumber("Heading: ", ahrs->GetFusedHeading());
 
 		// ********************* BEGIN DRIVE CONTROLS ***********************
-		driveX = m_stick0.GetX();
-		driveY = m_stick0.GetY();
-		rotate = m_stick1.GetZ();
+		driveX = m_stickRight.GetX();
+		driveY = m_stickRight.GetY();
+		rotate = m_stickLeft.GetZ();
 
-		if (m_stick0.GetRawButton(SlowDriveON)) precisionDrive = true;
-		if (m_stick0.GetRawButton(SlowDriveOFF)) precisionDrive = false;
+		if (m_stickRight.GetRawButton(SlowDriveON)) precisionDrive = true;
+		if (m_stickRight.GetRawButton(SlowDriveOFF)) precisionDrive = false;
 
-		if (m_stick0.GetRawButton(FieldModeON)) fieldDrive = true;
-		if (m_stick0.GetRawButton(FieldModeOFF)) fieldDrive = false;
+		if (m_stickRight.GetRawButton(FieldModeON)) fieldDrive = true;
+		if (m_stickRight.GetRawButton(FieldModeOFF)) fieldDrive = false;
 
-      	if( m_stick0.GetRawButton(ZeroYaw)) ahrs->ZeroYaw();
+      	if( m_stickRight.GetRawButton(ZeroYaw)) ahrs->ZeroYaw();
 		
 		
 		/* Encoder position is read from a CANEncoder object by calling the
@@ -288,7 +297,7 @@ void Robot::TeleopPeriodic() {
 
         bool rotateToAngle = false;
 		double currentRotationRate = 0;
-		int POVDirection = m_stick0.GetPOV();
+		int POVDirection = m_stickRight.GetPOV();
 		if (POVDirection >= 0) {
             if (POVDirection == 0) {
                 turnController->SetSetpoint(0.0f);
@@ -328,6 +337,12 @@ void Robot::TeleopPeriodic() {
 
 		// **************  BEGIN COLLECTOR/SHOOTER CONTROLS ****************
 
+		bool isDistanceValid = _DistanceSensor.IsRangeValid();
+		frc::SmartDashboard::PutBoolean("Distance Valid", isDistanceValid);
+		if(isDistanceValid)
+			frc::SmartDashboard::PutNumber("Lidar Distance", _DistanceSensor.GetRange());
+		else
+		    frc::SmartDashboard::PutNumber("Lidar Distance", 0);
 /*	
 		if(_LeftSensor.Get() != bPrevLeftSensor)
 		{
@@ -356,22 +371,13 @@ void Robot::TeleopPeriodic() {
 		SmartDashboard::PutBoolean("Rite Sensor: ",bBallDetectedRite);
 */
 		// Operate Collector
-		if (m_stick0.GetTrigger()) 
+		if (m_stickRight.GetTrigger()) 
 		{
 			_Collector.Set(COLLECTORPOWER);
 			//_CollectorTalon->Set(ControlMode::PercentOutput, CollectorPower);
 			_Feeder.Set(FEEDERPOWER);
 		}	
-		else
-		{
-			//_CollectorTalon->Set(ControlMode::PercentOutput, 0);
-				_Collector.Set(0);
-			if(!bShootStartedFeeder)
-				_Feeder.Set(0);
-		}
-
-		// Reverse Collector
-		if (m_stick0.GetRawButton(ReverseCollector))
+		else if (m_stickRight.GetRawButton(ReverseCollector))
 		{
 			_Collector.Set(-COLLECTORPOWER);
 			_Feeder.Set(-FEEDERPOWER);
@@ -390,7 +396,7 @@ void Robot::TeleopPeriodic() {
 		
 		if (bShootStartedShooter)
 		{
-			if (m_stick1.GetRawButton(ShootStartFeeder)) 
+			if (m_stickLeft.GetRawButton(ShootStartFeeder)) 
 			{
 				_Feeder.Set(FEEDERPOWER);
 				bShootStartedFeeder = true;
@@ -398,27 +404,34 @@ void Robot::TeleopPeriodic() {
 		}
 
 			
-		if (m_stick1.GetRawButton(ShootStartShooter))
+		if (m_stickLeft.GetRawButton(ShootStartShooter))
 		{
 			bShootStartedShooter = true;
-			_ShooterSpark.Set(ShooterPower1);
+			_ShooterBottom.Set(ShooterPower1);
 			_ShooterTop.Set(SHOOTERTOPPOWER);
 		} 
 
-		frc::SmartDashboard::PutNumber("Encoder Position", _ShooterEncoder.GetPosition());
-		frc::SmartDashboard::PutNumber("Shooter RPM", _ShooterEncoder.GetVelocity());
+		frc::SmartDashboard::PutNumber("Encoder Position", _ShooterTopEncoder.GetPosition());
+		frc::SmartDashboard::PutNumber("Shooter RPM", _ShooterTopEncoder.GetVelocity());
 
-		if(m_stick1.GetRawButton(ShootStopFeeder))
+
+		
+
+ 
+
+		frc::SmartDashboard::PutNumber("Shooter RPM conversion", _ShooterTopEncoder.GetVelocityConversionFactor());
+
+		if(m_stickLeft.GetRawButton(ShootStopFeeder))
 		{
 			bShootStartedFeeder = false;
 			_Feeder.Set(0);
 		}
 
-		if (m_stick1.GetRawButton(ShootStopAll))
+		if (m_stickLeft.GetRawButton(ShootStopAll))
 		{
 			bShootStartedShooter = false;
 			bShootStartedFeeder = false;
-			_ShooterSpark.Set(0);
+			_ShooterBottom.Set(0);
 			_ShooterTop.Set(0);
 			_Feeder.Set(0);
 		}
@@ -462,6 +475,7 @@ void Robot::TeleopPeriodic() {
 
   }  // while
 
+	_DistanceSensor.SetEnabled(false);
   m_robotDrive->SetSafetyEnabled(true);
 
 }
