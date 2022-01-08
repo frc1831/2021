@@ -1,0 +1,99 @@
+> Task :discoverRoborio
+
+Discovering Target roborio
+
+Using admin@172.22.11.2:22 for target roborio
+
+
+
+> Task :compileJava
+
+C:\Users\Team 1831\Code\2021\Trajectory\drivetest1\characterization-project\src\main\java\dc\SimEnabler.java:42: warning: [removal] setSubsystem(String) in Sendable has been deprecated and marked for removal
+
+  public void setSubsystem(String subsystem) {}
+
+              ^
+
+C:\Users\Team 1831\Code\2021\Trajectory\drivetest1\characterization-project\src\main\java\dc\SimEnabler.java:37: warning: [removal] getSubsystem() in Sendable has been deprecated and marked for removal
+
+  public String getSubsystem() {
+
+                ^
+
+C:\Users\Team 1831\Code\2021\Trajectory\drivetest1\characterization-project\src\main\java\dc\SimEnabler.java:34: warning: [removal] setName(String) in Sendable has been deprecated and marked for removal
+
+  public void setName(String name) {}
+
+              ^
+
+C:\Users\Team 1831\Code\2021\Trajectory\drivetest1\characterization-project\src\main\java\dc\SimEnabler.java:29: warning: [removal] getName() in Sendable has been deprecated and marked for removal
+
+  public String getName() {
+
+                ^
+
+4 warnings
+
+
+
+> Task :processResources NO-SOURCE
+
+> Task :classes
+> Task :downloadDepsPreemptively
+
+
+RUN 2
+
+> Task :extractTestJNI
+
+> Task :extractTestJNI FAILED
+
+Dependency Error!
+
+GradleRIO detected this build failed due to missing dependencies!
+
+Try again with `./gradlew downloadAll` whilst connected to the internet (not the robot!)
+
+If the error persists, ensure you are not behind a firewall / proxy server (common in schools)
+
+
+
+FAILURE: Build failed with an exception.
+
+
+
+* What went wrong:
+
+Execution failed for task ':extractTestJNI'.
+
+> Could not resolve all files for configuration ':nativeDesktopZip'.
+
+   > Could not download wpimath-cpp-2021.1.2-windowsx86-64.zip (edu.wpi.first.wpimath:wpimath-cpp:2021.1.2)
+
+      > Could not get resource 'https://frcmaven.wpi.edu/artifactory/release/edu/wpi/first/wpimath/wpimath-cpp/2021.1.2/wpimath-cpp-2021.1.2-windowsx86-64.zip'.
+
+         > Read timed out
+
+
+
+* Try:
+
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+
+
+
+* Get more help at https://help.gradle.org
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+Use '--warning-mode all' to show the individual deprecation warnings.
+See https://docs.gradle.org/6.0.1/userguide/command_line_interface.html#sec:command_line_warnings
+
+
+
+BUILD FAILED in 10m 51s
+
+1 actionable task: 1 executed
+
+
+

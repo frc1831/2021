@@ -19,7 +19,10 @@
 #include <ctre/Phoenix.h>
 #include <rev/CANSparkMax.h>
 #include <frc/PWMVictorSPX.h>
-#include <rev/Rev2mDistanceSensor.h>
+//#include <rev/Rev2mDistanceSensor.h>
+#include <rev/ColorSensorV3.h>
+#include <rev/ColorMatch.h>
+
 #include <AHRS.h>
 
   
@@ -98,6 +101,8 @@ const static double kDistancePerPulse = 0.19633;   //kDistancePerRevolution / kP
 /* PID Controller will attempt to get.                             */
 const static double kToleranceDegrees = 2.00f;
 
+static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
+
 
 class Robot : public frc::TimedRobot, public frc::PIDOutput {
  public:
@@ -147,7 +152,27 @@ WPI_TalonFX* _RearRite = new WPI_TalonFX(REAR_RIGHT);
   rev::CANSparkMax _ShooterTop {SHOOTERTOP, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANEncoder    _ShooterTopEncoder = _ShooterTop.GetEncoder();
 
-  rev::Rev2mDistanceSensor _DistanceSensor {rev::Rev2mDistanceSensor::Port::kOnboard, rev::Rev2mDistanceSensor::DistanceUnit::kInches, rev::Rev2mDistanceSensor::RangeProfile::kLongRange};
+// 2M Distance Sensor
+ //  rev::Rev2mDistanceSensor _DistanceSensor {rev::Rev2mDistanceSensor::Port::kOnboard, rev::Rev2mDistanceSensor::DistanceUnit::kInches, rev::Rev2mDistanceSensor::RangeProfile::kLongRange};
+
+// Color Sensor v3
+  rev::ColorSensorV3 m_colorSensor{i2cPort};
+    /**
+   * A Rev Color Match object is used to register and detect known colors. This can 
+   * be calibrated ahead of time or during operation.
+   * 
+   * This object uses a simple euclidian distance to estimate the closest match
+   * with given confidence range.
+   */
+  rev::ColorMatch m_colorMatcher;
+    /**
+   * Note: Any example colors should be calibrated as the user needs, these
+   * are here as a basic example.
+   */
+  static constexpr frc::Color kBlueTarget = frc::Color(0.143, 0.427, 0.429);
+  static constexpr frc::Color kGreenTarget = frc::Color(0.197, 0.561, 0.240);
+  static constexpr frc::Color kRedTarget = frc::Color(0.561, 0.232, 0.114);
+  static constexpr frc::Color kYellowTarget = frc::Color(0.361, 0.524, 0.113);
 
   //  rev::Rev2mDistanceSensor *distSensor;
 	// WPI_VictorSPX *_CollectorTalon;

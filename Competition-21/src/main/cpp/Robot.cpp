@@ -15,7 +15,7 @@
 #include <frc/WPILib.h>
 #include <cameraserver/CameraServer.h>
 #include <frc/DriverStation.h>
-#include <rev/Rev2mDistanceSensor.h>
+// #include <rev/Rev2mDistanceSensor.h>
 
 double angle = 0;
 
@@ -62,8 +62,11 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
 
-  // initialize distance sensor on OnBoard port, set units to inches
-  // distSensor = new rev::Rev2mDistanceSensor{rev::Rev2mDistanceSensor::Port::kOnboard, rev::Rev2mDistanceSensor::DistanceUnit::kInches};
+	m_colorMatcher.AddColorMatch(kBlueTarget);
+	m_colorMatcher.AddColorMatch(kGreenTarget);
+	m_colorMatcher.AddColorMatch(kRedTarget);
+	m_colorMatcher.AddColorMatch(kYellowTarget);
+
 
 
 	frc::CameraServer::GetInstance()->StartAutomaticCapture();
@@ -207,8 +210,12 @@ void Robot::TeleopPeriodic() {
 	// ORIGINAL ENCODER
 	//_FrntRiteEncoder.SetPosition(0);
 
-	_DistanceSensor.SetEnabled(true);
-	_DistanceSensor.SetAutomaticMode(true);
+
+
+
+// 2M Distance Sensor
+	// _DistanceSensor.SetEnabled(true);
+	// _DistanceSensor.SetAutomaticMode(true);
 
   	while (IsOperatorControl() && IsEnabled()) {
 
@@ -337,12 +344,44 @@ void Robot::TeleopPeriodic() {
 
 		// **************  BEGIN COLLECTOR/SHOOTER CONTROLS ****************
 
+	frc::Color detectedColor = m_colorSensor.GetColor();
+    std::string colorString;
+    double confidence = 0.0;
+    frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
+
+    if (matchedColor == kBlueTarget) {
+      colorString = "Blue";
+    } else if (matchedColor == kRedTarget) {
+      colorString = "Red";
+    } else if (matchedColor == kGreenTarget) {
+      colorString = "Green";
+    } else if (matchedColor == kYellowTarget) {
+      colorString = "Yellow";
+    } else {
+      colorString = "Unknown";
+    }
+
+    /**
+     * Open Smart Dashboard or Shuffleboard to see the color detected by the 
+     * sensor.
+     */
+    frc::SmartDashboard::PutNumber("Red", detectedColor.red);
+    frc::SmartDashboard::PutNumber("Green", detectedColor.green);
+    frc::SmartDashboard::PutNumber("Blue", detectedColor.blue);
+    frc::SmartDashboard::PutNumber("Confidence", confidence);
+    frc::SmartDashboard::PutString("Detected Color", colorString);
+
+
+/*   2M Distance Sensor
 		bool isDistanceValid = _DistanceSensor.IsRangeValid();
 		frc::SmartDashboard::PutBoolean("Distance Valid", isDistanceValid);
 		if(isDistanceValid)
 			frc::SmartDashboard::PutNumber("Lidar Distance", _DistanceSensor.GetRange());
 		else
 		    frc::SmartDashboard::PutNumber("Lidar Distance", 0);
+			*/
+
+			
 /*	
 		if(_LeftSensor.Get() != bPrevLeftSensor)
 		{
@@ -475,7 +514,7 @@ void Robot::TeleopPeriodic() {
 
   }  // while
 
-	_DistanceSensor.SetEnabled(false);
+//	_DistanceSensor.SetEnabled(false);
   m_robotDrive->SetSafetyEnabled(true);
 
 }
